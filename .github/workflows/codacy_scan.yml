@@ -1,0 +1,37 @@
+name: Codacy Code Scan
+
+on:
+  push:
+    branches:
+      - main  # Or the branch you want to trigger this on
+
+jobs:
+  codacy_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # You can set this to whatever Node version you need
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Run Codacy analysis
+      uses: codacy/codacy-analysis-cli-action@v3
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+    - name: Check Codacy results
+      run: |
+        if curl -s https://api.codacy.com/v2.0/reports/${{ secrets.CODACY_PROJECT_TOKEN }} | grep -q "bugs\|errors"; then
+          echo "Codacy found issues. Stopping the pipeline."
+          exit 1
+        else
+          echo "No issues found by Codacy. Proceeding with the pipeline."
+        fi
