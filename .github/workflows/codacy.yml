@@ -1,23 +1,20 @@
-name: Codacy Analysis
+name: Test Codacy Token
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  codacy-security-scan:
-    name: Codacy Security Scan
+  test-token:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run Codacy Analysis CLI
-        uses: codacy/codacy-analysis-cli-action@master
-        with:
-          api-token: ${{ secrets.CODACY_API_TOKEN }}
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          upload: true
-          verbose: true
+      - name: Test Codacy Token
+        run: |
+          if [ -n "${{ secrets.CODACY_PROJECT_TOKEN }}" ]; then
+            echo "Token is set and not empty"
+            echo "First few characters: ${CODACY_PROJECT_TOKEN:0:4}..."
+          else
+            echo "Token is not set or empty"
+          fi
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
