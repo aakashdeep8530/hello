@@ -26,8 +26,13 @@ jobs:
         run: npm install
 
       - name: Run Codacy Analysis CLI
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
         uses: codacy/codacy-analysis-cli-action@master
         with:
+          verbose: true
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          api-token: ${{ secrets.CODACY_API_TOKEN }}
           upload: true
-          max-allowed-issues: 0  # This will make the workflow fail if any issues are found
+          max-allowed-issues: 0
