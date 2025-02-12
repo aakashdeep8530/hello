@@ -23,6 +23,7 @@ jobs:
     # Install project dependencies
     - name: Install dependencies
       run: |
+        cd frontend  # Navigate to the directory containing package.json if needed
         npm install
 
     # Install Codacy CLI tool
