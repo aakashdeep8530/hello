@@ -10,26 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Checkout the repository code
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Set up Node.js environment
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'  # You can set this to whatever Node version you need
+        node-version: '16'  # Adjust the Node.js version as needed
 
+    # Install project dependencies
     - name: Install dependencies
       run: |
         npm install
 
-    - name: Run Codacy analysis
-      uses: codacy/codacy-analysis-cli-action@v3
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+    # Install Codacy CLI tool
+    - name: Install Codacy CLI
+      run: |
+        curl -Ls https://github.com/codacy/codacy-analysis-cli/releases/download/v3.1.1/codacy-analysis-cli-linux-x86_64-3.1.1.tar.gz | tar xz
+        sudo mv codacy-analysis-cli /usr/local/bin
 
+    # Run Codacy analysis on the code
+    - name: Run Codacy analysis
+      run: |
+        codacy-analysis-cli -l nodejs -t ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+    # Check Codacy results and stop the pipeline if issues are found
     - name: Check Codacy results
       run: |
-        if curl -s https://api.codacy.com/v2.0/reports/${{ secrets.CODACY_PROJECT_TOKEN }} | grep -q "bugs\|errors"; then
+        if curl -s "https://api.codacy.com/v2.0/reports/${{ secrets.CODACY_PROJECT_TOKEN }}" | grep -q "bugs\|errors"; then
           echo "Codacy found issues. Stopping the pipeline."
           exit 1
         else
