@@ -1,4 +1,4 @@
-name: Codacy Code Scan
+name: Codacy Analysis
 
 on:
   push:
@@ -7,32 +7,17 @@ on:
     branches: [ main ]
 
 jobs:
-  codacy-analysis-cli:
-    name: Codacy Analysis CLI
+  codacy-security-scan:
+    name: Codacy Security Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Run Codacy Analysis CLI
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
         uses: codacy/codacy-analysis-cli-action@master
         with:
-          verbose: true
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           api-token: ${{ secrets.CODACY_API_TOKEN }}
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           upload: true
-          max-allowed-issues: 0
+          verbose: true
