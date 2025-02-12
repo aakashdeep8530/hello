@@ -1,20 +1,55 @@
-name: Test Codacy Token
+# name: Test Codacy Token
+
+# on:
+#   push:
+#     branches: [ main ]
+
+# jobs:
+#   test-token:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Test Codacy Token
+#         run: |
+#           if [ -n "${{ secrets.CODACY_PROJECT_TOKEN }}" ]; then
+#             echo "Token is set and not empty"
+#             echo "First few characters: ${CODACY_PROJECT_TOKEN:0:4}..."
+#           else
+#             echo "Token is not set or empty"
+#           fi
+#         env:
+#           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+
+name: Codacy Analysis
 
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  test-token:
+  codacy-security-scan:
+    name: Codacy Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    
     steps:
-      - name: Test Codacy Token
-        run: |
-          if [ -n "${{ secrets.CODACY_PROJECT_TOKEN }}" ]; then
-            echo "Token is set and not empty"
-            echo "First few characters: ${CODACY_PROJECT_TOKEN:0:4}..."
-          else
-            echo "Token is not set or empty"
-          fi
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Codacy Analysis CLI
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        uses: codacy/codacy-analysis-cli-action@master
+        with:
+          tool: eslint
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          upload: true
+          format: text
+          output: results.txt
+          fail-if-incomplete: true
+          max-allowed-issues: 100
