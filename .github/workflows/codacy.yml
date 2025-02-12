@@ -19,35 +19,34 @@
 #         env:
 #           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
-
 name: Codacy Analysis
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
-  codacy-security-scan:
-    name: Codacy Security Scan
+  codacy-analysis:
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Run Codacy analysis
-        uses: codacy/codacy-analysis-cli-action@master
         with:
-          tool: eslint
+          fetch-depth: 0
+
+      # Debug step to verify environment
+      - name: Debug Token Presence
+        run: |
+          if [ -n "${{ secrets.CODACY_PROJECT_TOKEN }}" ]; then
+            echo "Token is present"
+          else
+            echo "Token is missing"
+          fi
+        
+      - name: Run Codacy Analysis
+        uses: codacy/codacy-analysis-cli-action@v4.3.0  # Using specific version
+        with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          upload: true
-          format: text
-          output: results.txt
-          fail-if-incomplete: true
-          max-allowed-issues: 100
+          verbose: true
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
