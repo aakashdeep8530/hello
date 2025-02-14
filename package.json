@@ -5,9 +5,11 @@
   "main": "hello.js",
   "scripts": {
     "test": "jest --coverage",
-    "start": "node hello.js"
+    "start": "node hello.js",
+    "lint": "eslint ."
   },
   "devDependencies": {
+    "eslint": "^8.56.0",
     "jest": "^29.7.0"
   }
 }
