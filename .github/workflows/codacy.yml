@@ -24,14 +24,18 @@ jobs:
 
     - name: Install dependencies
       run: |
-        echo "Checking for package-lock.json"
-        if [ -f package-lock.json ]; then
-          echo "Using existing package-lock.json"
-          npm ci
-        else
-          echo "No package-lock.json found, using npm install"
-          npm install
-        fi
+        npm ci || npm install
+
+    - name: Setup Git
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+
+    - name: Clean SARIF
+      run: |
+        rm -f results.sarif
+        git add .
+        git commit -m "Clean before analysis" || true
 
     - name: Run Codacy Analysis
       uses: codacy/codacy-analysis-cli-action@master
@@ -44,3 +48,15 @@ jobs:
         upload: true
       env:
         CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
+
+    - name: Upload SARIF results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: results.sarif
+
+    - name: Cleanup
+      if: always()
+      run: |
+        git clean -f
+        rm -f results.sarif
