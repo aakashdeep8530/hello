@@ -3,16 +3,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
-    "url": "hello"
+    "url": "https://github.com/aakashdeep8530/hello.git"
   },
-  "author": "",
+  "author": "Your Name",
   "license": "ISC",
-  "description": "",
+  "description": "A simple Node.js app to print 'Hello, World!'",
   "dependencies": {
     "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0"  // Example version, check for the latest
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
