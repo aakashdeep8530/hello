@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-analyze:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -47,18 +47,13 @@ jobs:
         }' > .eslintrc.js
 
     - name: Run Codacy Analysis
-      env:
-        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
       uses: codacy/codacy-analysis-cli-action@master
       with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         output: results.sarif
         format: sarif
         gh-code-scanning-compat: true
         max-allowed-issues: 0
-        tool: eslint
         upload: true
-
-    - name: Upload SARIF results file
-      uses: github/codeql-action/upload-sarif@main
-      with:
-        sarif_file: results.sarif
+      env:
+        CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
