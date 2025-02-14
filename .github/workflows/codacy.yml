@@ -44,7 +44,7 @@
 #           fi
         
 #       - name: Run Codacy Analysis
-#         uses: codacy/codacy-analysis-cli-action@v4.3.0  # Using specific version
+#         uses: codacy/codacy-analysis-cli-action@v4.3.0  # Using specifc version
 #         with:
 #           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
