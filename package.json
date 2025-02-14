@@ -1,28 +1,13 @@
 {
   "name": "hello",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Hello World Node.js application",
+  "main": "hello.js",
   "scripts": {
-    "test": "jest --coverage",  // Add jest coverage generation
-    "lint": "eslint ."  // This runs ESLint on the entire project
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aakashdeep8530/hello.git"
-  },
-  "author": "Your Name",
-  "license": "ISC",
-  "description": "A simple Node.js app to print 'Hello, World!'",
-  "dependencies": {
-    "express": "^4.21.2"
+    "test": "jest --coverage",
+    "start": "node hello.js"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "eslint": "^8.57.1",
-    "globals": "^15.15.0",
-    "jest": "^29.0.0"  // Adding Jest for test and coverage generation
-  },
-  "engines": {
-    "node": "14.x"
+    "jest": "^29.7.0"
   }
 }
