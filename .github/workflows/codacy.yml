@@ -38,7 +38,7 @@ jobs:
         git commit -m "Clean before analysis" || true
 
     - name: Run Codacy Analysis
-      uses: codacy/codacy-analysis-cli-action@master
+      uses: codacy/codacy-analysis-cli-action@v1  # Using a stable version
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         output: results.sarif
@@ -48,6 +48,9 @@ jobs:
         upload: true
       env:
         CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
+
+    - name: Show SARIF contents
+      run: cat results.sarif  # Debugging: print the contents of the SARIF file
 
     - name: Upload SARIF results
       uses: github/codeql-action/upload-sarif@v2
