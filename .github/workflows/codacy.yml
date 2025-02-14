@@ -38,7 +38,7 @@ jobs:
         git commit -m "Clean before analysis" || true
 
     - name: Run Codacy Analysis
-      uses: codacy/codacy-analysis-cli-action@latest  # Use 'latest' tag for the most recent stable version
+      uses: codacy/codacy-analysis-cli-action@v3  # Using stable v3 release
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         output: results.sarif
