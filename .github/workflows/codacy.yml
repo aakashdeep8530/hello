@@ -38,7 +38,7 @@ jobs:
         git commit -m "Clean before analysis" || true
 
     - name: Run Codacy Analysis
-      uses: codacy/codacy-analysis-cli-action@master  # Using the master branch (most recent)
+      uses: codacy/codacy-analysis-cli-action@master  # Using master for the latest version
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         output: results.sarif
@@ -53,7 +53,7 @@ jobs:
       run: cat results.sarif  # Debugging: print the contents of the SARIF file
 
     - name: Upload SARIF results
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3  # Updated to v3 for CodeQL action
       if: always()
       with:
         sarif_file: results.sarif
