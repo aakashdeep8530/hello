@@ -50,7 +50,7 @@ jobs:
         CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
 
     - name: Show SARIF contents
-      run: cat results.sarif  # Debugging: print the contents of the SARIF file
+      run: cat results.sarif  # Debugging: print the contents the SARIF file
 
     - name: Upload SARIF results
       uses: github/codeql-action/upload-sarif@v2
