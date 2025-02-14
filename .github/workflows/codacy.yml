@@ -1,27 +1,55 @@
 name: Node.js CI
+
 # Trigger the workflow when pushing to master or opening pull requests to master
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     # Step 1: Checkout the repository
     - name: Checkout code
       uses: actions/checkout@v2
+
     # Step 2: Set up Node.js environment
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '14'  # Change to the Node.js version you prefer, e.g., '14' or '16'
+
     # Step 3: Install dependencies
-    - name: Install dependencies
-      run: npm install
+    #- name: Install dependencies
+     # run: npm install
+
     # Step 4: Run ESLint to check code quality
     - name: Run ESLint
       run: npm run lint  # Runs "eslint ." as per the script in package.json
+
+    # Step 5: Install Codacy CLI (used to trigger Codacy scan)
+    - name: Install Codacy CLI
+      run: npm install -g codacy-coverage
+
+    # Step 6: Trigger Codacy Code Coverage
+    - name: Upload code coverage to Codacy
+      run: |
+        codacy-coverage -r coverage/coverage-final.json  # Ensure your coverage reports are generated first. If not, this step might be skipped
+      env:
+        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+    # Step 7: Check for Codacy errors and stop pipeline if found
+    - name: Check Codacy status and stop if errors found
+      run: |
+        result=$(curl -sSL https://api.codacy.com/project/{your_project_token}/status)
+        if [[ $result == *"error"* ]]; then
+          echo "Error found in code quality. Stopping pipeline."
+          exit 1
+        else
+          echo "No error found. Proceeding with pipeline."
+        fi
