@@ -1,110 +1,25 @@
-# # name: Test Codacy Token
-
-# # on:
-# #   push:
-# #     branches: [ main ]
-
-# # jobs:
-# #   test-token:
-# #     runs-on: ubuntu-latest
-# #     steps:
-# #       - name: Test Codacy Token
-# #         run: |
-# #           if [ -n "${{ secrets.CODACY_PROJECT_TOKEN }}" ]; then
-# #             echo "Token is set and not empty"
-# #             echo "First few characters: ${CODACY_PROJECT_TOKEN:0:4}..."
-# #           else
-# #             echo "Token is not set or empty"
-# #           fi
-# #         env:
-# #           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-# name: Codacy Analysis
-
-# on:
-#   push:
-#     branches: [ main ]
-
-# jobs:
-#   codacy-analysis:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-
-#       # Debug step to verify environment
-#       - name: Debug Token Presence
-#         run: |
-#           if [ -n "${{ secrets.CODACY_PROJECT_TOKEN }}" ]; then
-#             echo "Token is present"
-#           else
-#             echo "Token is missing"
-#           fi
-        
-#       - name: Run Codacy Analysis
-#         uses: codacy/codacy-analysis-cli-action@v4.3.0  # Using specifc version
-#         with:
-#           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-
-name: Node.js CI
-
-# Trigger the workflow when pushing to master or opening pull requests to master
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    # Step 1: Checkout the repository
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    # Step 2: Set up Node.js environment
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'  # Change to the Node.js version you prefer, e.g., '14' or '16'
-
-    # Step 3: Install dependencies
-    - name: Install dependencies
-      run: npm install
-
-    # Step 4: Run ESLint to check code quality
-    - name: Run ESLint
-      run: npm run lint  # Runs "eslint ." as per the script in package.json
-
-#     # Step 5: Install Codacy CLI (used to trigger Codacy scan)
-#     - name: Install Codacy CLI
-#       run: npm install -g codacy-coverage
-
-#     # Step 6: Trigger Codacy Code Coverage
-#     - name: Upload code coverage to Codacy
-#       run: |
-#         codacy-coverage -r coverage/coverage-final.json  # Ensure your coverage reports are generated first. If not, this step might be skipped
-#       env:
-#         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-#     # Step 7: Check for Codacy errors and stop pipeline if found
-#     - name: Check Codacy status and stop if errors found
-#       run: |
-#         result=$(curl -sSL https://api.codacy.com/project/{your_project_token}/status)
-#         if [[ $result == *"error"* ]]; then
-#           echo "Error found in code quality. Stopping pipeline."
-#           exit 1
-#         else
-#           echo "No error found. Proceeding with pipeline."
-#         fi
-
-# #           verbose: true
-# #         env:
-# #           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+{
+  "name": "hello",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aakashdeep8530/hello.git"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "description": "A simple Node.js app to print 'Hello, World!'",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+}
