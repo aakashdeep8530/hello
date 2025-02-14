@@ -5,11 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
-    "run": "npm install"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aakashdeep8530/hello.git"
+    "url": "https://github.com/your-username/your-repo-name.git"
   },
   "author": "Your Name",
   "license": "ISC",
@@ -18,7 +17,7 @@
     "express": "^4.21.2"
   },
   "devDependencies": {
-    "eslint": "^8.0.0"  // Example version, check for the latest
+    "eslint": "^8.0.0"
   },
   "engines": {
     "node": "14.x"
