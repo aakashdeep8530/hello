@@ -1,6 +1,6 @@
 name: Node.js CI
 
-# Trigger the workflow when pushing to master or opening pull requests to master
+# Trigger the workflow when pushing to main or opening pull requests to main
 on:
   push:
     branches:
@@ -22,7 +22,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'  # Change to the Node.js version you prefer, e.g., '14' or '16'
+        node-version: '14'  # Ensure to match the node version in package.json
 
     # Step 3: Install dependencies
     - name: Install dependencies
@@ -39,11 +39,11 @@ jobs:
     # Step 6: Trigger Codacy Code Coverage
     - name: Upload code coverage to Codacy
       run: |
-        codacy-coverage -r coverage/coverage-final.json  # Ensure your coverage reports are generated first. If not, this step might be skipped
+        codacy-coverage --coverage-report coverage/coverage-final.json  # Ensure coverage report is generated
       env:
-        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}  # Use your Codacy project token
 
-    # Step 7: Check for Codacy errors and stop pipeline if found
+    # Step 7: Check for Codacy errors and stop pipeline if errors found
     - name: Check Codacy status and stop if errors found
       run: |
         result=$(curl -sSL https://api.codacy.com/project/{your_project_token}/status)
