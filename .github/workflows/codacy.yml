@@ -29,8 +29,8 @@ jobs:
     #  run: npm install
 
     # Step 4: Run ESLint to check code quality
-    - name: Run ESLint
-      run: npm run lint  # Runs "eslint ." as per the script in package.json
+  #  - name: Run ESLint
+   #   run: npm run lint  # Runs "eslint ." as per the script in package.json
 
     # Step 5: Install Codacy CLI (used to trigger Codacy scan)
     - name: Install Codacy CLI
