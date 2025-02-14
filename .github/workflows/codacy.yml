@@ -15,7 +15,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        clean: true
 
     - name: Setup Node.js
       uses: actions/setup-node@v2
@@ -23,18 +22,16 @@ jobs:
         node-version: '18'
         cache: 'npm'
 
-    - name: Clean Install Dependencies
+    - name: Install dependencies
       run: |
-        rm -rf node_modules
-        rm -f package-lock.json
-        npm cache clean --force
-        npm ci
-
-    - name: Prepare for Analysis
-      run: |
-        git add .
-        git status
-        git diff --cached --exit-code || git commit -m "Prepare for analysis" || true
+        echo "Checking for package-lock.json"
+        if [ -f package-lock.json ]; then
+          echo "Using existing package-lock.json"
+          npm ci
+        else
+          echo "No package-lock.json found, using npm install"
+          npm install
+        fi
 
     - name: Run Codacy Analysis
       uses: codacy/codacy-analysis-cli-action@master
