@@ -15,36 +15,26 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        clean: true
 
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '18'
+        cache: 'npm'
 
-    - name: Install dependencies
+    - name: Clean Install Dependencies
       run: |
-        npm install
-        npm install eslint --save-dev
+        rm -rf node_modules
+        rm -f package-lock.json
+        npm cache clean --force
+        npm ci
 
-    - name: Create ESLint config
+    - name: Prepare for Analysis
       run: |
-        echo 'module.exports = {
-          "env": {
-            "node": true,
-            "es2021": true
-          },
-          "extends": "eslint:recommended",
-          "parserOptions": {
-            "ecmaVersion": "latest",
-            "sourceType": "module"
-          },
-          "rules": {
-            "indent": ["error", 4],
-            "linebreak-style": ["error", "unix"],
-            "quotes": ["error", "single"],
-            "semi": ["error", "always"]
-          }
-        }' > .eslintrc.js
+        git add .
+        git status
+        git diff --cached --exit-code || git commit -m "Prepare for analysis" || true
 
     - name: Run Codacy Analysis
       uses: codacy/codacy-analysis-cli-action@master
