@@ -1,33 +1,17 @@
-name: Deploy to EC2
+name: Test EC2 Connection
 
 on:
-  push:
-    branches:
-      - dev  # Trigger when code is pushed to the dev branch
+  workflow_dispatch:  # 👈 This enables manual trigger from GitHub UI
 
 jobs:
-  deploy:
+  test-connection:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-
-    - name: Deploy to EC2
-      run: |
-        ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          # Navigate to /var/www/html
-          cd /var/www/html
-
-          # Check if the 'prenew' folder exists, and if so, delete it
-          if [ -d "prenew" ]; then
-            rm -rf prenew
-          fi
-
-          # Create 'prenew' folder and clone the code from the dev branch
-          mkdir prenew
-          cd prenew
-          git clone -b dev https://github.com/${{ github.repository }} .
-        EOF
+      - name: Test SSH to Windows EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            echo "✅ Connected to EC2 successfully!"
