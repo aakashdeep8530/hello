@@ -1,20 +1,26 @@
 name: Clone Repo on Windows Server
 
 on:
-  workflow_dispatch:  # Trigger manually from GitHub UI
+  workflow_dispatch:
 
 jobs:
   clone:
     runs-on: [self-hosted, windows]
     steps:
-      - name: Print current directory
+      - name: Add Git to PATH
         run: |
-          echo "Current Directory: $PWD"
+          $env:Path += ";C:\Program Files (x86)\Git\cmd"
 
-      - name: Ensure Git folder exists
+      - name: Delete old folder if exists
         run: |
-          New-Item -ItemType Directory -Path "C:\Users\Administrator\Desktop\git folder" -Force
+          if (Test-Path "C:\Users\Administrator\Desktop\git folder") {
+            Remove-Item -Recurse -Force "C:\Users\Administrator\Desktop\git folder"
+          }
 
-      - name: Clone repository manually
+      - name: Create fresh target folder
         run: |
-          git clone https://github.com/${{ github.repository }} "C:\Users\Administrator\Desktop\git folder"
+          New-Item -ItemType Directory -Force -Path "C:\Users\Administrator\Desktop\git folder"
+
+      - name: Clone repository
+        run: |
+          git clone https://github.com/aakashdeep8530/hello.git "C:\Users\Administrator\Desktop\git folder"
