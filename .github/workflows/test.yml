@@ -1,52 +1,46 @@
 name: Copy Folder and Deploy
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub UI
   push:
     branches:
-      - test  # Trigger on push to test branch for deploy-dev only
+      - test       # sirf test branch pe push pe trigger hoga deploy-dev
+  workflow_dispatch:  # manual trigger ke liye
 
 jobs:
   deploy-dev:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/test'  # Only run on push to test branch
-    runs-on: dev-runner  # Must be a registered self-hosted runner
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/test' }}
+    runs-on: dev-runner
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy folder to deployment directory on dev
+      - name: Deploy to dev
         run: |
           SOURCE="."
-          DEST="/var/www/html/" 
-
-          echo "Copying from $SOURCE to $DEST"
+          DEST="/var/www/html/"
+          echo "Deploying to DEV..."
           if [ -d "$DEST" ]; then
-            echo "Cleaning destination folder, preserving node_modules..."
-            # Remove everything except for node_modules
             find "$DEST" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec rm -rf {} +
           fi
           cp -r "$SOURCE"/* "$DEST"
-          echo "✅ Folder copied successfully."
+          echo "✅ Dev deployment successful."
 
   deploy-uat:
-    if: github.event_name == 'workflow_dispatch'  # Only run on manual trigger
-    runs-on: uat-runner  # Must be a registered self-hosted runner
+    if: ${{ github.event_name == 'workflow_dispatch' }}   # manual trigger pe hi chale
+    runs-on: uat-runner
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy folder to deployment directory on uat
+      - name: Deploy to uat
         run: |
           SOURCE="."
-          DEST="/var/www/html/" 
-
-          echo "Copying from $SOURCE to $DEST"
+          DEST="/var/www/html/"
+          echo "Deploying to UAT..."
           if [ -d "$DEST" ]; then
-            echo "Cleaning destination folder, preserving node_modules..."
-            # Remove everything except for node_modules
             find "$DEST" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec rm -rf {} +
           fi
           cp -r "$SOURCE"/* "$DEST"
-          echo "✅ Folder copied successfully."
+          echo "✅ UAT deployment successful."
