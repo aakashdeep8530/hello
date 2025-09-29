@@ -27,7 +27,7 @@ jobs:
           echo "✅ Dev deployment successful."
 
   deploy-uat:
-    if: ${{ github.event_name == 'workflow_dispatch' }}   # manual trigger pe hi chale
+    #if: ${{ github.event_name == 'workflow_dispatch' }}   # manual trigger pe hi chale
     runs-on: uat-runner
 
     steps:
