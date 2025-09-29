@@ -3,7 +3,7 @@ name: Deploy to Environment
 on:
   push:
     branches:
-      - main
+      - test
   workflow_dispatch:
     inputs:
       environment:
