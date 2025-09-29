@@ -3,7 +3,7 @@ name: Deploy to Environment
 on:
   push:
     branches:
-      - test  # Auto-deploy to dev-runner on every push
+      - main
   workflow_dispatch:
     inputs:
       environment:
@@ -18,8 +18,7 @@ on:
 
 jobs:
   deploy:
-    # Run on dev-runner for push, or specific runner for manual triggers
-    runs-on: ${{ github.event_name == 'push' && 'dev-runner' || github.event.inputs.environment + '-runner' }}
+    runs-on: ${{ github.event_name == 'push' && 'dev-runner' || format('{}-runner', github.event.inputs.environment) }}
 
     steps:
       - name: Checkout code
@@ -27,6 +26,5 @@ jobs:
 
       - name: Deploy application
         run: |
-          echo "Deploying on runner: $RUNNER_NAME"
-          # Your deployment commands here, for example:
-          # ./deploy.sh
+          echo "Running deployment on $RUNNER_NAME"
+          # Your deployment commands here
