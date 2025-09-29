@@ -3,18 +3,25 @@ name: Copy Folder and Deploy
 on:
   push:
     branches:
-      - test       # sirf test branch pe push pe trigger hoga deploy-dev
-  workflow_dispatch:  # manual trigger ke liye
+      - test
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment to deploy'
+        required: true
+        default: 'uat'
+        type: choice
+        options:
+          - dev
+          - uat
 
 jobs:
   deploy-dev:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/test' }}
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/test') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev') }}
     runs-on: dev-runner
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Deploy to dev
         run: |
           SOURCE="."
@@ -27,13 +34,11 @@ jobs:
           echo "✅ Dev deployment successful."
 
   deploy-uat:
-    #if: ${{ github.event_name == 'workflow_dispatch' }}   # manual trigger pe hi chale
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'uat' }}
     runs-on: uat-runner
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Deploy to uat
         run: |
           SOURCE="."
