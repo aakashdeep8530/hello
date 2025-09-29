@@ -27,4 +27,4 @@ jobs:
       - name: Deploy application
         run: |
           echo "Running deployment on $RUNNER_NAME"
-          # Your deployment commands here ggfg
+          # Your deployment commands here
