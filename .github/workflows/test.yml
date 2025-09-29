@@ -2,12 +2,13 @@ name: Copy Folder and Deploy
 
 on:
   workflow_dispatch:  # Manual trigger from GitHub UI
-  push:               # Trigger on push to test branch (we’ll disable it for uat)
+  push:
     branches:
-      - test
+      - test  # Trigger on push to test branch for deploy-dev only
 
 jobs:
   deploy-dev:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/test'  # Only run on push to test branch
     runs-on: dev-runner  # Must be a registered self-hosted runner
 
     steps:
@@ -25,15 +26,12 @@ jobs:
             # Remove everything except for node_modules
             find "$DEST" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec rm -rf {} +
           fi
-          cp -r "$SOURCE" "$DEST"
+          cp -r "$SOURCE"/* "$DEST"
           echo "✅ Folder copied successfully."
 
-  
-on:
-  workflow_dispatch:
   deploy-uat:
+    if: github.event_name == 'workflow_dispatch'  # Only run on manual trigger
     runs-on: uat-runner  # Must be a registered self-hosted runner
-    if: ${{ github.event_name == 'workflow_dispatch' }}  # Trigger only for manual dispatch
 
     steps:
       - name: Checkout repository
@@ -50,5 +48,5 @@ on:
             # Remove everything except for node_modules
             find "$DEST" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec rm -rf {} +
           fi
-          cp -r "$SOURCE" "$DEST"
+          cp -r "$SOURCE"/* "$DEST"
           echo "✅ Folder copied successfully."
