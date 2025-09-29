@@ -28,6 +28,9 @@ jobs:
           cp -r "$SOURCE" "$DEST"
           echo "✅ Folder copied successfully."
 
+  
+on:
+  workflow_dispatch:
   deploy-uat:
     runs-on: uat-runner  # Must be a registered self-hosted runner
     if: ${{ github.event_name == 'workflow_dispatch' }}  # Trigger only for manual dispatch
