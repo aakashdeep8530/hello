@@ -1,13 +1,13 @@
-name: Copy Folder and Restart PM2
+name: Copy Folder and Deploy
 
 on:
   workflow_dispatch:  # Manual trigger from GitHub UI
-  push:               # Optional: Trigger on push to main branch
+  push:               # Trigger on push to test branch (we’ll disable it for uat)
     branches:
       - test
 
 jobs:
-  deploy:
+  deploy-dev:
     runs-on: dev-runner  # Must be a registered self-hosted runner
 
     steps:
@@ -28,9 +28,9 @@ jobs:
           cp -r "$SOURCE" "$DEST"
           echo "✅ Folder copied successfully."
 
-jobs:
-  deploy:
+  deploy-uat:
     runs-on: uat-runner  # Must be a registered self-hosted runner
+    if: ${{ github.event_name == 'workflow_dispatch' }}  # Trigger only for manual dispatch
 
     steps:
       - name: Checkout repository
