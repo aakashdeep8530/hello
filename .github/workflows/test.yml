@@ -1,51 +1,32 @@
-name: Copy Folder and Deploy
+name: Deploy to Environment
 
 on:
   push:
     branches:
-      - test
+      - test  # Auto-deploy to dev-runner on every push
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Select environment to deploy'
+        description: 'Environment to deploy to'
         required: true
-        default: 'uat'
         type: choice
         options:
-          - dev
           - uat
+          - qa
+          - preprod
+          - prod
 
 jobs:
-  deploy-dev:
-    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/test') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev') }}
-    runs-on: dev-runner
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Deploy to dev
-        run: |
-          SOURCE="."
-          DEST="/var/www/html/"
-          echo "Deploying to DEV..."
-          if [ -d "$DEST" ]; then
-            find "$DEST" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec rm -rf {} +
-          fi
-          cp -r "$SOURCE"/* "$DEST"
-          echo "✅ Dev deployment successful."
+  deploy:
+    # Run on dev-runner for push, or specific runner for manual triggers
+    runs-on: ${{ github.event_name == 'push' && 'dev-runner' || github.event.inputs.environment + '-runner' }}
 
-  deploy-uat:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'uat' }}
-    runs-on: uat-runner
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Deploy to uat
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy application
         run: |
-          SOURCE="."
-          DEST="/var/www/html/"
-          echo "Deploying to UAT..."
-          if [ -d "$DEST" ]; then
-            find "$DEST" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec rm -rf {} +
-          fi
-          cp -r "$SOURCE"/* "$DEST"
-          echo "✅ UAT deployment successful."
+          echo "Deploying on runner: $RUNNER_NAME"
+          # Your deployment commands here, for example:
+          # ./deploy.sh
